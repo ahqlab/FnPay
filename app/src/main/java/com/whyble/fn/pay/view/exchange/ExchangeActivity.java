@@ -1,85 +1,72 @@
-package com.whyble.fn.pay;
+package com.whyble.fn.pay.view.exchange;
 
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.content.DialogInterface;
+import android.databinding.BindingAdapter;
+import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+import com.whyble.fn.pay.R;
+import com.whyble.fn.pay.common.adapter.AbsractCommonAdapter;
 import com.whyble.fn.pay.common.base.BaseActivity;
+import com.whyble.fn.pay.databinding.ActivityExchangeBinding;
+import com.whyble.fn.pay.databinding.SpinnerItemBinding;
 import com.whyble.fn.pay.domain.CoinInfo;
-import com.whyble.fn.pay.domain.ServerResponse;
-import com.whyble.fn.pay.view.editInfo.EdtInfoActivity;
-import com.whyble.fn.pay.view.exchange.ExchangeActivity;
-import com.whyble.fn.pay.view.payment.PaymentActivity;
-import com.whyble.fn.pay.view.receive.ReceiveActivity;
-import com.whyble.fn.pay.view.send.SendActivity;
+import com.whyble.fn.pay.domain.ExchangeItem;
+import com.whyble.fn.pay.util.ValidationUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity<MainActivity> implements NavigationView.OnNavigationItemSelectedListener, MainIn.View {
+public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements ExchangetIn.View{
 
-    MainIn.Presenter presenter;
+    ActivityExchangeBinding binding;
+
+    AbsractCommonAdapter<ExchangeItem> adapter;
+
+    int coinType;
+
+    ExchangetIn.Presenter presenter;
 
     @BindView(R.id.coin_title)
     TextView coinTitle;
     @BindView(R.id.balance)
     TextView balance;
 
+    int coinPrice;
+    float totalBalance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_exchange);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_exchange);
+        binding.setActivity(ExchangeActivity.this);
         ButterKnife.bind(this);
-
-        presenter = new MainPresenter(this);
+        presenter = new ExchangePresenter(this);
         presenter.loadData(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         presenter.getCoinInfo(0);
         coinBarClick("FNC");
+        List<ExchangeItem> items = new ArrayList<ExchangeItem>();
+        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin02, "LTC"));
+        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin03, "DASH"));
+        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin04, "BTC"));
+        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin05, "BHC"));
+        setSpinner(items);
     }
 
-    @Override
-    protected BaseActivity<MainActivity> getActivityClass() {
-        return MainActivity.this;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return false;
-    }
-
-    @OnClick({R.id.btn_payment, R.id.btn_exchange, R.id.btn_send, R.id.btn_receive, R.id.btn_share, R.id.btn_edit_info,
-            R.id.fnc_coin, R.id.fnc_coin_btn,
+    @OnClick({R.id.fnc_coin, R.id.fnc_coin_btn,
             R.id.ltc_coin, R.id.ltc_coin_btn,
             R.id.dash_coin, R.id.dash_coin_btn,
             R.id.btc_coin, R.id.btc_coin_btn,
@@ -87,62 +74,56 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
     })
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_exchange:
-                startActivity(new Intent(getApplicationContext(), ExchangeActivity.class));
-                break;
-            case R.id.btn_payment:
-                startActivity(new Intent(getApplicationContext(), PaymentActivity.class));
-                break;
-            case R.id.btn_send:
-                startActivity(new Intent(getApplicationContext(), SendActivity.class));
-                break;
-            case R.id.btn_receive:
-                startActivity(new Intent(getApplicationContext(), ReceiveActivity.class));
-                break;
-            case R.id.btn_edit_info:
-                startActivity(new Intent(getApplicationContext(), EdtInfoActivity.class));
-                break;
             case R.id.fnc_coin:
                 coinBarClick("FNC");
                 presenter.getCoinInfo(0);
+                coinType = 0;
                 break;
             case R.id.fnc_coin_btn:
                 coinBarClick("FNC");
                 presenter.getCoinInfo(0);
+                coinType = 0;
                 break;
             case R.id.ltc_coin:
                 coinBarClick("LTC");
                 presenter.getCoinInfo(1);
+                coinType = 1;
                 break;
             case R.id.ltc_coin_btn:
                 coinBarClick("LTC");
                 presenter.getCoinInfo(1);
+                coinType = 1;
                 break;
             case R.id.dash_coin:
                 coinBarClick("DASH");
                 presenter.getCoinInfo(2);
+                coinType = 2;
                 break;
             case R.id.dash_coin_btn:
                 coinBarClick("DASH");
                 presenter.getCoinInfo(2);
+                coinType = 2;
                 break;
             case R.id.btc_coin:
                 coinBarClick("BTC");
                 presenter.getCoinInfo(3);
+                coinType = 3;
                 break;
             case R.id.btc_coin_btn:
                 coinBarClick("BTC");
                 presenter.getCoinInfo(3);
+                coinType = 3;
                 break;
             case R.id.bch_coin:
                 coinBarClick("BCH");
                 presenter.getCoinInfo(4);
+                coinType = 4;
                 break;
             case R.id.bch_coin_btn:
                 coinBarClick("BCH");
                 presenter.getCoinInfo(4);
+                coinType = 4;
                 break;
-
         }
     }
 
@@ -225,30 +206,52 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - backPressedTime;
+    public void setSpinner(List<ExchangeItem> list){
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
-                super.onBackPressed();
-            } else {
-                backPressedTime = tempTime;
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.press_back_message), Toast.LENGTH_SHORT).show();
+        adapter = new AbsractCommonAdapter<ExchangeItem>(ExchangeActivity.this, list) {
+
+            SpinnerItemBinding adapterBinding;
+
+            @Override
+            protected View getUserEditView(final int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = adapter.inflater.inflate(R.layout.spinner_item, null);
+                    adapterBinding = DataBindingUtil.bind(convertView);
+                    adapterBinding.setDomain(adapter.data.get(position));
+                    convertView.setTag(adapterBinding);
+                } else {
+                    adapterBinding = (SpinnerItemBinding) convertView.getTag();
+                    adapterBinding.setDomain(adapter.data.get(position));
+                }
+                convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        return false;
+                    }
+                });
+                return adapterBinding.getRoot();
             }
-        }
+        };
+        binding.spinner.setAdapter(adapter);
     }
 
     @Override
-    public void getCoinInfo(String s) {
+    protected BaseActivity<ExchangeActivity> getActivityClass() {
+        return ExchangeActivity.this;
+    }
+
+    @BindingAdapter({"loadPetPicasoImage"})
+    public static void loadPicasoImage(ImageView imageView, int id) {
+        imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(id));
+    }
+
+    @Override
+    public void setCoinInfo(String s) {
         Gson gson = new Gson();
         CoinInfo response = gson.fromJson(s, CoinInfo.class);
-        Log.e("HJLEE", "s" + response.toString());
         coinTitle.setText(response.getCoin_title());
         balance.setText(response.getBalance());
+        coinPrice = Integer.parseInt(response.getCoin_price());
+        totalBalance = Float.parseFloat(response.getBalance());
     }
 }
