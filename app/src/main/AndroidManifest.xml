@@ -30,8 +30,9 @@
         <activity android:name=".view.exchange.ExchangeActivity" />
         <activity android:name=".view.send.SendActivity" />
         <activity android:name=".view.receive.ReceiveActivity" />
-        <activity android:name=".view.editInfo.EdtInfoActivity"></activity>
+        <activity android:name=".view.editInfo.EdtInfoActivity" />
         <activity android:name=".test.TestActivity" />
+        <activity android:name=".view.history.HistoryActivity"></activity>
     </application>
 
 </manifest>

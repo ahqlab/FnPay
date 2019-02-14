@@ -73,7 +73,6 @@ public class LoginActivity extends BaseActivity<LoginActivity> implements LoginI
                 break;
             case R.id.join_btn:
                 startActivity(new Intent(getApplicationContext(), JoinActivity.class));
-                finish();
                 break;
         }
     }

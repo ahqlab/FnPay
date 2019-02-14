@@ -53,11 +53,18 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         ButterKnife.bind(this);
+
+        TextView pageTitle = (TextView) findViewById(R.id.page_title);
+        pageTitle.setText("PAYMENT");
+        super.setToolbarColor();
+
         presenter = new PaymentPresenter(this);
         presenter.loadData(this);
         presenter.getCoinInfo(0);
-        coinBarClick("FNC");
 
+
+
+        coinBarClick("FNC");
         usd.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {

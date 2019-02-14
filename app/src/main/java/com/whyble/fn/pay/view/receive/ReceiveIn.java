@@ -1,20 +1,17 @@
-package com.whyble.fn.pay.view.exchange;
+package com.whyble.fn.pay.view.receive;
 
 import android.content.Context;
 
-public class ExchangetIn {
+public class ReceiveIn {
 
     interface View{
 
         void setCoinInfo(String s);
-
-        void setExchangeSpinner(String s);
     }
     interface Presenter{
         void loadData(Context context);
 
         void getCoinInfo(int i);
 
-        void getExchangeSpinner(int i);
     }
 }

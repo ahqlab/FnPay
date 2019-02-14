@@ -1,4 +1,4 @@
-package com.whyble.fn.pay.view.exchange;
+package com.whyble.fn.pay.view.join;
 
 import android.content.Context;
 
@@ -13,7 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExchangeModel extends CommonModel {
+public class JoinModel extends CommonModel {
 
     Context context;
 
@@ -24,10 +24,13 @@ public class ExchangeModel extends CommonModel {
         sharedPrefManager = SharedPrefManager.getInstance(context);
     }
 
-    public void getExchangeSpinner(int i, final DomainCallBackListner<String> domainCallBackListner) {
+    public void signup(String id, String password, String pinnumber, final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("coin_type", String.valueOf(i)));
-        new AbstractOldAsyncTask("exchange_list.php"){
+        nameValuePairs.add(new BasicNameValuePair("id", id));
+        nameValuePairs.add(new BasicNameValuePair("pass", password));
+        nameValuePairs.add(new BasicNameValuePair("pinnumber", pinnumber));
+
+        new AbstractOldAsyncTask("register.php"){
 
             @Override
             protected void doPostExecute(String d) {

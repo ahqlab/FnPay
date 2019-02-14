@@ -1,6 +1,7 @@
 package com.whyble.fn.pay;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +24,8 @@ import com.whyble.fn.pay.domain.CoinInfo;
 import com.whyble.fn.pay.domain.ServerResponse;
 import com.whyble.fn.pay.view.editInfo.EdtInfoActivity;
 import com.whyble.fn.pay.view.exchange.ExchangeActivity;
+import com.whyble.fn.pay.view.history.HistoryActivity;
+import com.whyble.fn.pay.view.login.LoginActivity;
 import com.whyble.fn.pay.view.payment.PaymentActivity;
 import com.whyble.fn.pay.view.receive.ReceiveActivity;
 import com.whyble.fn.pay.view.send.SendActivity;
@@ -73,6 +76,32 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        if (id == R.id.logout) {
+            mSharedPrefManager.removeAllPreferences();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        } else if (id == R.id.edit_user_info) {
+            startActivity(new Intent(getApplicationContext(), EdtInfoActivity.class));
+        } else if (id == R.id.payment) {
+            startActivity(new Intent(getApplicationContext(), PaymentActivity.class));
+        } else if (id == R.id.exchange) {
+            startActivity(new Intent(getApplicationContext(), ExchangeActivity.class));
+        } else if (id == R.id.share) {
+            Intent msg = new Intent(Intent.ACTION_SEND);
+            msg.addCategory(Intent.CATEGORY_DEFAULT);
+            msg.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
+            msg.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + getPackageName());
+            msg.putExtra(Intent.EXTRA_TITLE, R.string.app_name);
+            msg.setType("text/plain");
+            startActivity(Intent.createChooser(msg, "Share"));
+        } else if (id == R.id.history) {
+            startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+        } else if (id == R.id.send) {
+            startActivity(new Intent(getApplicationContext(), SendActivity.class));
+        } else if (id == R.id.receive) {
+            startActivity(new Intent(getApplicationContext(), ReceiveActivity.class));
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;
@@ -251,4 +280,12 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
         coinTitle.setText(response.getCoin_title());
         balance.setText(response.getBalance());
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        return super.onOptionsItemSelected(item);
+    }
+
 }

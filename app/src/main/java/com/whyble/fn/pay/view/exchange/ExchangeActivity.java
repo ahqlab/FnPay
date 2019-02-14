@@ -5,6 +5,7 @@ import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.whyble.fn.pay.R;
 import com.whyble.fn.pay.common.adapter.AbsractCommonAdapter;
@@ -58,12 +60,8 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         presenter.loadData(this);
         presenter.getCoinInfo(0);
         coinBarClick("FNC");
-        List<ExchangeItem> items = new ArrayList<ExchangeItem>();
-        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin02, "LTC"));
-        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin03, "DASH"));
-        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin04, "BTC"));
-        items.add(new ExchangeItem(R.drawable.coin01, "FNC",R.drawable.coin05, "BHC"));
-        setSpinner(items);
+
+        setFcnSpinner();
     }
 
     @OnClick({R.id.fnc_coin, R.id.fnc_coin_btn,
@@ -76,51 +74,61 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         switch (view.getId()) {
             case R.id.fnc_coin:
                 coinBarClick("FNC");
+                setFcnSpinner();
                 presenter.getCoinInfo(0);
                 coinType = 0;
                 break;
             case R.id.fnc_coin_btn:
                 coinBarClick("FNC");
+                setFcnSpinner();
                 presenter.getCoinInfo(0);
                 coinType = 0;
                 break;
             case R.id.ltc_coin:
                 coinBarClick("LTC");
+                setLtcSpinner();
                 presenter.getCoinInfo(1);
                 coinType = 1;
                 break;
             case R.id.ltc_coin_btn:
                 coinBarClick("LTC");
+                setLtcSpinner();
                 presenter.getCoinInfo(1);
                 coinType = 1;
                 break;
             case R.id.dash_coin:
                 coinBarClick("DASH");
+                setDashSpinner();
                 presenter.getCoinInfo(2);
                 coinType = 2;
                 break;
             case R.id.dash_coin_btn:
                 coinBarClick("DASH");
+                setDashSpinner();
                 presenter.getCoinInfo(2);
                 coinType = 2;
                 break;
             case R.id.btc_coin:
                 coinBarClick("BTC");
+                setBtcSpinner();
                 presenter.getCoinInfo(3);
                 coinType = 3;
                 break;
             case R.id.btc_coin_btn:
                 coinBarClick("BTC");
+                setBtcSpinner();
                 presenter.getCoinInfo(3);
                 coinType = 3;
                 break;
             case R.id.bch_coin:
                 coinBarClick("BCH");
+                setBchSpinner();
                 presenter.getCoinInfo(4);
                 coinType = 4;
                 break;
             case R.id.bch_coin_btn:
                 coinBarClick("BCH");
+                setBchSpinner();
                 presenter.getCoinInfo(4);
                 coinType = 4;
                 break;
@@ -206,6 +214,28 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         }
     }
 
+    public void setFcnSpinner(){
+        presenter.getExchangeSpinner(0);
+    }
+
+
+    public void setLtcSpinner(){
+        presenter.getExchangeSpinner(1);
+    }
+
+    public void setDashSpinner(){
+        presenter.getExchangeSpinner(2);
+    }
+
+    public void setBtcSpinner(){
+        presenter.getExchangeSpinner(3);
+    }
+
+    public void setBchSpinner(){
+        presenter.getExchangeSpinner(4);
+    }
+
+
     public void setSpinner(List<ExchangeItem> list){
 
         adapter = new AbsractCommonAdapter<ExchangeItem>(ExchangeActivity.this, list) {
@@ -229,6 +259,12 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
                         return false;
                     }
                 });
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
                 return adapterBinding.getRoot();
             }
         };
@@ -241,8 +277,18 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
     }
 
     @BindingAdapter({"loadPetPicasoImage"})
-    public static void loadPicasoImage(ImageView imageView, int id) {
-        imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(id));
+    public static void loadPicasoImage(ImageView imageView, String title) {
+        if(title.matches("FNC")){
+            imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin01));
+        }else if(title.matches("LTC")){
+            imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin02));
+        }else if(title.matches("DASH")){
+            imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin03));
+        }else if(title.matches("BTC")){
+            imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin04));
+        }else if(title.matches("BCH")){
+            imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin05));
+        }
     }
 
     @Override
@@ -253,5 +299,13 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         balance.setText(response.getBalance());
         coinPrice = Integer.parseInt(response.getCoin_price());
         totalBalance = Float.parseFloat(response.getBalance());
+    }
+
+    @Override
+    public void setExchangeSpinner(String s) {
+        Log.e("HJLEE", "S : " + s);
+        Gson gson = new Gson();
+        List<ExchangeItem> list = gson.fromJson(s, new TypeToken<List<ExchangeItem>>(){}.getType());
+        setSpinner(list);
     }
 }

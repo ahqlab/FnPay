@@ -1,20 +1,23 @@
-package com.whyble.fn.pay.view.exchange;
+package com.whyble.fn.pay.view.receive;
 
 import android.content.Context;
 
 import com.whyble.fn.pay.MainModel;
 import com.whyble.fn.pay.common.CommonModel;
+import com.whyble.fn.pay.view.send.SendIn;
+import com.whyble.fn.pay.view.send.SendModel;
 
-public class ExchangePresenter implements ExchangetIn.Presenter {
+public class ReceivePresenter implements ReceiveIn.Presenter {
 
-    ExchangetIn.View view;
+    ReceiveIn.View view;
 
-    ExchangeModel model;
+    ReceiveModel model;
+
     MainModel mainModel;
 
-    public ExchangePresenter(ExchangetIn.View view) {
+    public ReceivePresenter(ReceiveIn.View view) {
         this.view = view;
-        this.model = new ExchangeModel();
+        this.model = new ReceiveModel();
         this.mainModel = new MainModel();
     }
 
@@ -39,18 +42,5 @@ public class ExchangePresenter implements ExchangetIn.Presenter {
         });
     }
 
-    @Override
-    public void getExchangeSpinner(int i) {
-        model.getExchangeSpinner(i, new CommonModel.DomainCallBackListner<String>() {
-            @Override
-            public void doPostExecute(String s) {
-                view.setExchangeSpinner(s);
-            }
 
-            @Override
-            public void doPreExecute() {
-
-            }
-        });
-    }
 }

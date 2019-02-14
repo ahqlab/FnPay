@@ -1,4 +1,4 @@
-package com.whyble.fn.pay.view.exchange;
+package com.whyble.fn.pay.view.send;
 
 import android.content.Context;
 
@@ -13,7 +13,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExchangeModel extends CommonModel {
+public class SendModel extends CommonModel {
 
     Context context;
 
@@ -24,10 +24,14 @@ public class ExchangeModel extends CommonModel {
         sharedPrefManager = SharedPrefManager.getInstance(context);
     }
 
-    public void getExchangeSpinner(int i, final DomainCallBackListner<String> domainCallBackListner) {
+    public void sendCoin(String addr, String sendCoin, String coinType, final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("coin_type", String.valueOf(i)));
-        new AbstractOldAsyncTask("exchange_list.php"){
+        nameValuePairs.add(new BasicNameValuePair("addr", addr));
+        nameValuePairs.add(new BasicNameValuePair("send_coin", sendCoin));
+        nameValuePairs.add(new BasicNameValuePair("coin_type", coinType));
+        nameValuePairs.add(new BasicNameValuePair("valid_user", sharedPrefManager.getStringExtra(TextManager.VALID_USER)));
+
+        new AbstractOldAsyncTask("send_coin.php"){
 
             @Override
             protected void doPostExecute(String d) {

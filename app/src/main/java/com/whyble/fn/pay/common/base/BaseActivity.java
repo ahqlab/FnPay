@@ -6,13 +6,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.whyble.fn.pay.R;
 import com.whyble.fn.pay.common.SharedPrefManager;
 
 public abstract class BaseActivity<D extends Activity> extends AppCompatActivity {
@@ -40,15 +44,15 @@ public abstract class BaseActivity<D extends Activity> extends AppCompatActivity
     protected abstract BaseActivity<D> getActivityClass();
 
     public void setToolbarColor() {
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.hodoo_pink), PorterDuff.Mode.SRC_ATOP);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-                overridePendingTransition(R.anim.end_enter, R.anim.end_exit);
+                //overridePendingTransition(R.anim.end_enter, R.anim.end_exit);
             }
-        });*/
+        });
     }
 
     public AlertDialog.Builder showBasicOneBtnPopup(String title, String message) {

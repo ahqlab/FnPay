@@ -7,20 +7,22 @@ import lombok.Data;
 @Data
 public class ExchangeItem implements Serializable {
 
-    private int icon1;
 
-    private String coin1;
+    private String title1;
 
-    private int icon2;
+    private String title2;
 
-    private String coin2;
+    private String ex_type;
 
-    public ExchangeItem(int icon1, String coin1, int icon2, String coin2) {
-        this.icon1 = icon1;
-        this.coin1 = coin1;
-        this.icon2 = icon2;
-        this.coin2 = coin2;
+    private String price1;
+
+    private String price2;
+
+    public ExchangeItem(String title1, String title2, String ex_type, String price1, String price2) {
+        this.title1 = title1;
+        this.title2 = title2;
+        this.ex_type = ex_type;
+        this.price1 = price1;
+        this.price2 = price2;
     }
-
-
 }

@@ -24,8 +24,6 @@ public class LoginPresenter implements LoginIn.Presenter {
 
     @Override
     public void login(String inputId, String inputPass) {
-        Log.e("HJLEE", "inputId : " + inputId);
-        Log.e("HJLEE", "inputPass : " + inputPass);
         model.login(inputId, inputPass, new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
