@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">FnPay</string>
+    <string name="toast_text_clipboard_adress">복사 성공</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="press_back_message">종료하려면 \'Back\' 버튼을 다시 누르십시오.</string>
 </resources>

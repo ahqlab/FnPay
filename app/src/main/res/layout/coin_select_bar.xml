@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="24dp"
+    android:layout_marginRight="24dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/fnc_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_left_radius_trans_bg"
+        android:gravity="center_horizontal|center_vertical">
+
+        <Button
+            android:id="@+id/fnc_coin_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/coin01" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ltc_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_radius_trans_bg"
+        android:gravity="center_horizontal|center_vertical">
+
+        <Button
+            android:id="@+id/ltc_coin_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/coin02" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dash_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_radius_trans_bg"
+        android:gravity="center_horizontal|center_vertical">
+
+        <Button
+            android:id="@+id/dash_coin_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/coin03" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btc_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_radius_trans_bg"
+        android:gravity="center_horizontal|center_vertical">
+
+        <Button
+            android:id="@+id/btc_coin_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/coin04" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bch_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_right_radius_trans_bg"
+        android:gravity="center_horizontal|center_vertical">
+
+        <Button
+            android:id="@+id/bch_coin_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/coin05" />
+    </LinearLayout>
+
+</LinearLayout>

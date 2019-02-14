@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group>
+        <item
+            android:id="@+id/edit_user_info"
+            android:title="정보수정" />
+        <item
+            android:id="@+id/logout"
+            android:title="로그아웃" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/payment"
+            android:title="결제하기" />
+        <item
+            android:id="@+id/exchange"
+            android:title="교환하기" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/history"
+            android:title="내역" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/send"
+            android:title="보내기" />
+        <item
+            android:id="@+id/receive"
+            android:title="받기" />
+        <item
+            android:id="@+id/share"
+            android:title="공유" />
+    </group>
+
+    <!--<item android:title="@string/my_page">
+        <menu>
+            <item
+                android:id="@+id/draw_home"
+                android:title="@string/home" />
+            <item
+                android:id="@+id/draw_myfarm"
+                android:title="@string/myfarm" />
+            <item
+                android:id="@+id/draw_shopping"
+                android:title="@string/shopping" />
+            <item
+                android:id="@+id/draw_bioblock"
+                android:title="@string/bioblock" />
+            <item
+                android:id="@+id/draw_my_info"
+                android:title="@string/my_info" />
+        </menu>
+    </item>
+
+    <item android:title="@string/history">
+        <menu>
+            <item
+                android:id="@+id/draw_save_seed"
+                android:title="@string/cap_save_seed" />
+            <item
+                android:id="@+id/draw_farm_seed"
+                android:title="@string/cap_farm_seed" />
+            <item
+                android:id="@+id/draw_harvest_history"
+                android:title="@string/cap_harvest_history" />
+            <item
+                android:id="@+id/draw_bonus_seed"
+                android:title="@string/cap_bonus_seed" />
+        </menu>
+    </item>-->
+
+</menu>
