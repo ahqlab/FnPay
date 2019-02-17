@@ -107,7 +107,7 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
         return false;
     }
 
-    @OnClick({R.id.btn_payment, R.id.btn_exchange, R.id.btn_send, R.id.btn_receive, R.id.btn_share, R.id.btn_edit_info,
+    @OnClick({R.id.btn_payment, R.id.btn_exchange, R.id.btn_send, R.id.btn_receive, R.id.btn_share, R.id.btn_edit_info, R.id.history_btn,
             R.id.fnc_coin, R.id.fnc_coin_btn,
             R.id.ltc_coin, R.id.ltc_coin_btn,
             R.id.dash_coin, R.id.dash_coin_btn,
@@ -130,6 +130,9 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
                 break;
             case R.id.btn_edit_info:
                 startActivity(new Intent(getApplicationContext(), EdtInfoActivity.class));
+                break;
+            case R.id.history_btn:
+                startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
                 break;
             case R.id.fnc_coin:
                 coinBarClick("FNC");
@@ -170,6 +173,15 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
             case R.id.bch_coin_btn:
                 coinBarClick("BCH");
                 presenter.getCoinInfo(4);
+                break;
+            case R.id.btn_share:
+                Intent msg = new Intent(Intent.ACTION_SEND);
+                msg.addCategory(Intent.CATEGORY_DEFAULT);
+                msg.putExtra(Intent.EXTRA_SUBJECT, R.string.app_name);
+                msg.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + getPackageName());
+                msg.putExtra(Intent.EXTRA_TITLE, R.string.app_name);
+                msg.setType("text/plain");
+                startActivity(Intent.createChooser(msg, "Share"));
                 break;
 
         }
@@ -276,7 +288,6 @@ public class MainActivity extends BaseActivity<MainActivity> implements Navigati
     public void getCoinInfo(String s) {
         Gson gson = new Gson();
         CoinInfo response = gson.fromJson(s, CoinInfo.class);
-        Log.e("HJLEE", "s" + response.toString());
         coinTitle.setText(response.getCoin_title());
         balance.setText(response.getBalance());
     }

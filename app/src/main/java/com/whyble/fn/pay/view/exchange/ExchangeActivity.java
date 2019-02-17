@@ -3,50 +3,66 @@ package com.whyble.fn.pay.view.exchange;
 import android.content.DialogInterface;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.squareup.picasso.Picasso;
 import com.whyble.fn.pay.R;
 import com.whyble.fn.pay.common.adapter.AbsractCommonAdapter;
 import com.whyble.fn.pay.common.base.BaseActivity;
 import com.whyble.fn.pay.databinding.ActivityExchangeBinding;
 import com.whyble.fn.pay.databinding.SpinnerItemBinding;
 import com.whyble.fn.pay.domain.CoinInfo;
+import com.whyble.fn.pay.domain.Exchange;
 import com.whyble.fn.pay.domain.ExchangeItem;
+import com.whyble.fn.pay.domain.ServerResponse;
 import com.whyble.fn.pay.util.ValidationUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements ExchangetIn.View{
+public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements ExchangetIn.View {
 
     ActivityExchangeBinding binding;
 
     AbsractCommonAdapter<ExchangeItem> adapter;
 
     int coinType;
+    float price2;
 
     ExchangetIn.Presenter presenter;
 
     @BindView(R.id.coin_title)
     TextView coinTitle;
+
+    @BindView(R.id.s_coin_title)
+    TextView sCoinTitle;
+
     @BindView(R.id.balance)
     TextView balance;
 
+    @BindView(R.id.coin_length)
+    EditText coinLength;
+
+    @BindView(R.id.exchange_value)
+    EditText exchangeValue;
+
     int coinPrice;
+
+    int exType;
+
     float totalBalance;
 
     @Override
@@ -60,15 +76,41 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         presenter.loadData(this);
         presenter.getCoinInfo(0);
         coinBarClick("FNC");
-
         setFcnSpinner();
+        TextView pageTitle = (TextView) findViewById(R.id.page_title);
+        pageTitle.setText("EXCHANGE");
+        super.setToolbarColor();
+
+        coinLength.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().matches("")) {
+                    float value = Float.parseFloat(charSequence.toString());
+                    float exchange = ((coinPrice * value) / price2);
+                    Log.e("HJLEE", "value : " + value + " coinPrice : " + coinPrice + " price2 : " + price2 + " exchange : " + exchange);
+                    exchangeValue.setText(String.valueOf(exchange));
+                } else {
+                    exchangeValue.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @OnClick({R.id.fnc_coin, R.id.fnc_coin_btn,
             R.id.ltc_coin, R.id.ltc_coin_btn,
             R.id.dash_coin, R.id.dash_coin_btn,
             R.id.btc_coin, R.id.btc_coin_btn,
-            R.id.bch_coin, R.id.bch_coin_btn
+            R.id.bch_coin, R.id.bch_coin_btn, R.id.submit
     })
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -131,6 +173,19 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
                 setBchSpinner();
                 presenter.getCoinInfo(4);
                 coinType = 4;
+                break;
+            case R.id.submit:
+                if (ValidationUtil.isEmptyOfEditText((EditText) findViewById(R.id.coin_length))) {
+                    super.showBasicOneBtnPopup(null, "보낼 코인 수량을 입력하세요.")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                } else {
+                    presenter.doExchange(String.valueOf(coinType), String.valueOf(exType), exchangeValue.getText().toString(), coinLength.getText().toString());
+                }
                 break;
         }
     }
@@ -214,29 +269,29 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         }
     }
 
-    public void setFcnSpinner(){
+    public void setFcnSpinner() {
         presenter.getExchangeSpinner(0);
     }
 
 
-    public void setLtcSpinner(){
+    public void setLtcSpinner() {
         presenter.getExchangeSpinner(1);
     }
 
-    public void setDashSpinner(){
+    public void setDashSpinner() {
         presenter.getExchangeSpinner(2);
     }
 
-    public void setBtcSpinner(){
+    public void setBtcSpinner() {
         presenter.getExchangeSpinner(3);
     }
 
-    public void setBchSpinner(){
+    public void setBchSpinner() {
         presenter.getExchangeSpinner(4);
     }
 
 
-    public void setSpinner(List<ExchangeItem> list){
+    public void setSpinner(List<ExchangeItem> list) {
 
         adapter = new AbsractCommonAdapter<ExchangeItem>(ExchangeActivity.this, list) {
 
@@ -253,22 +308,40 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
                     adapterBinding = (SpinnerItemBinding) convertView.getTag();
                     adapterBinding.setDomain(adapter.data.get(position));
                 }
-                convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        return false;
-                    }
-                });
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
                 return adapterBinding.getRoot();
             }
         };
         binding.spinner.setAdapter(adapter);
+        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                price2 = Float.parseFloat(adapter.data.get(i).getPrice2());
+                exType = Integer.parseInt(adapter.data.get(i).getEx_type());
+                exchangeValue.setHint(adapter.data.get(i).getTitle2());
+                coinLength.setHint(adapter.data.get(i).getTitle1());
+                if (adapter.data.get(i).getEx_type() == "0") {
+                    coinLength.setText("");
+                    exchangeValue.setText("");
+                } else if (adapter.data.get(i).getEx_type() == "1") {
+                    coinLength.setText("");
+                    exchangeValue.setText("");
+                } else if (adapter.data.get(i).getEx_type() == "2") {
+                    coinLength.setText("");
+                    exchangeValue.setText("");
+                } else if (adapter.data.get(i).getEx_type() == "3") {
+                    coinLength.setText("");
+                    exchangeValue.setText("");
+                } else if (adapter.data.get(i).getEx_type() == "4") {
+                    coinLength.setText("");
+                    exchangeValue.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     @Override
@@ -278,15 +351,15 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
 
     @BindingAdapter({"loadPetPicasoImage"})
     public static void loadPicasoImage(ImageView imageView, String title) {
-        if(title.matches("FNC")){
+        if (title.matches("FNC")) {
             imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin01));
-        }else if(title.matches("LTC")){
+        } else if (title.matches("LTC")) {
             imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin02));
-        }else if(title.matches("DASH")){
+        } else if (title.matches("DASH")) {
             imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin03));
-        }else if(title.matches("BTC")){
+        } else if (title.matches("BTC")) {
             imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin04));
-        }else if(title.matches("BCH")){
+        } else if (title.matches("BCH")) {
             imageView.setImageDrawable(imageView.getContext().getResources().getDrawable(R.drawable.coin05));
         }
     }
@@ -296,6 +369,7 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         Gson gson = new Gson();
         CoinInfo response = gson.fromJson(s, CoinInfo.class);
         coinTitle.setText(response.getCoin_title());
+        sCoinTitle.setText(response.getCoin_title());
         balance.setText(response.getBalance());
         coinPrice = Integer.parseInt(response.getCoin_price());
         totalBalance = Float.parseFloat(response.getBalance());
@@ -303,9 +377,32 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
 
     @Override
     public void setExchangeSpinner(String s) {
-        Log.e("HJLEE", "S : " + s);
         Gson gson = new Gson();
-        List<ExchangeItem> list = gson.fromJson(s, new TypeToken<List<ExchangeItem>>(){}.getType());
-        setSpinner(list);
+        Exchange exchange = gson.fromJson(s, Exchange.class);
+        setSpinner(exchange.getCoin_list());
+    }
+
+    @Override
+    public void setExchangeResult(String s) {
+        Gson gson = new Gson();
+        ServerResponse response = gson.fromJson(s, ServerResponse.class);
+        if (response.getResult().matches("0")) {
+            super.showBasicOneBtnPopup(null, response.getMsg())
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    }).show();
+        } else {
+            super.showBasicOneBtnPopup(null, response.getMsg())
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
     }
 }

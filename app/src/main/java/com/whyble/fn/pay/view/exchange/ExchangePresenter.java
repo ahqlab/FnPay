@@ -53,4 +53,19 @@ public class ExchangePresenter implements ExchangetIn.Presenter {
             }
         });
     }
+
+    @Override
+    public void doExchange(String coinType, String exType, String exCoin, String sendCoin) {
+        model.doExchange(coinType, exType, exCoin, sendCoin, new CommonModel.DomainCallBackListner<String>() {
+            @Override
+            public void doPostExecute(String s) {
+                view.setExchangeResult(s);
+            }
+
+            @Override
+            public void doPreExecute() {
+
+            }
+        });
+    }
 }
