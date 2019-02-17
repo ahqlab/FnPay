@@ -43,13 +43,13 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginRight="8dp"
-            app:loadPetPicasoImage="@{domain.title1}"/>
+            app:loadPetPicasoImage="@{domain.title2}"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="21sp"
             android:textStyle="bold"
-            android:text="@={domain.title1}"/>
+            android:text="@={domain.title2}"/>
 
     </LinearLayout>
 

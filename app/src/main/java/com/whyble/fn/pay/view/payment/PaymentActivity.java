@@ -43,6 +43,8 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
 
     @BindView(R.id.usd)
     EditText usd;
+    @BindView(R.id.s_coin_title)
+    TextView sCoinTitle;
 
     int coinPrice;
     float totalBalance;
@@ -61,7 +63,6 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
         presenter = new PaymentPresenter(this);
         presenter.loadData(this);
         presenter.getCoinInfo(0);
-
 
 
         coinBarClick("FNC");
@@ -86,7 +87,7 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
                                     }
                                 }).show();
                     }
-                }else{
+                } else {
                     fcnCoin.setText("");
                 }
             }
@@ -103,7 +104,7 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
         return PaymentActivity.this;
     }
 
-    @OnClick({ R.id.paymennt_btn,
+    @OnClick({R.id.paymennt_btn,
             R.id.fnc_coin, R.id.fnc_coin_btn,
             R.id.ltc_coin, R.id.ltc_coin_btn,
             R.id.dash_coin, R.id.dash_coin_btn,
@@ -114,51 +115,61 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
         switch (view.getId()) {
             case R.id.fnc_coin:
                 coinBarClick("FNC");
+                fcnCoin.setHint("FNC");
                 presenter.getCoinInfo(0);
                 coinType = 0;
                 break;
             case R.id.fnc_coin_btn:
                 coinBarClick("FNC");
+                fcnCoin.setHint("FNC");
                 presenter.getCoinInfo(0);
                 coinType = 0;
                 break;
             case R.id.ltc_coin:
                 coinBarClick("LTC");
+                fcnCoin.setHint("LTC");
                 presenter.getCoinInfo(1);
                 coinType = 1;
                 break;
             case R.id.ltc_coin_btn:
                 coinBarClick("LTC");
+                fcnCoin.setHint("LTC");
                 presenter.getCoinInfo(1);
                 coinType = 1;
                 break;
             case R.id.dash_coin:
                 coinBarClick("DASH");
+                fcnCoin.setHint("DASH");
                 presenter.getCoinInfo(2);
                 coinType = 2;
                 break;
             case R.id.dash_coin_btn:
                 coinBarClick("DASH");
+                fcnCoin.setHint("DASH");
                 presenter.getCoinInfo(2);
                 coinType = 2;
                 break;
             case R.id.btc_coin:
                 coinBarClick("BTC");
+                fcnCoin.setHint("BTC");
                 presenter.getCoinInfo(3);
                 coinType = 3;
                 break;
             case R.id.btc_coin_btn:
                 coinBarClick("BTC");
+                fcnCoin.setHint("BTC");
                 presenter.getCoinInfo(3);
                 coinType = 3;
                 break;
             case R.id.bch_coin:
                 coinBarClick("BCH");
+                fcnCoin.setHint("BCH");
                 presenter.getCoinInfo(4);
                 coinType = 4;
                 break;
             case R.id.bch_coin_btn:
                 coinBarClick("BCH");
+                fcnCoin.setHint("BCH");
                 presenter.getCoinInfo(4);
                 coinType = 4;
                 break;
@@ -281,7 +292,7 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
     public void doPaymentResult(String s) {
         Gson gson = new Gson();
         ServerResponse response = gson.fromJson(s, ServerResponse.class);
-        if(response.getResult() == "0"){
+        if (response.getResult() == "0") {
             super.showBasicOneBtnPopup(null, response.getMsg())
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
@@ -296,7 +307,7 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
                             dialog.dismiss();
                         }
                     }).show();
-        }else{
+        } else {
             super.showBasicOneBtnPopup(null, response.getMsg())
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override

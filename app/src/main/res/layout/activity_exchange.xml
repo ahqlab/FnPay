@@ -66,6 +66,7 @@
                         android:layout_marginRight="8dp"
                         android:text="0"/>
                     <TextView
+                        android:id="@+id/s_coin_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
@@ -101,6 +102,7 @@
                 </Spinner>
 
                 <EditText
+                    android:id="@+id/coin_length"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -113,20 +115,23 @@
                     android:textSize="14sp" />
 
                 <EditText
+                    android:id="@+id/exchange_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
                     android:background="@drawable/rounded_white_bg"
-                    android:hint="PHP"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint=""
                     android:maxLines="1"
                     android:padding="8dp"
                     android:textSize="14sp" />
 
                 <Button
 
-                    android:id="@+id/login_btn"
+                    android:id="@+id/submit"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -137,7 +142,7 @@
                     android:background="@drawable/rounded_blue_bg"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="PAYMENT"
+                    android:text="EXCHANGE"
                     android:textColor="@color/white" />
 
             </LinearLayout>

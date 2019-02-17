@@ -57,6 +57,7 @@
                     android:layout_marginRight="8dp"
                     android:text="0"/>
                 <TextView
+                    android:id="@+id/s_coin_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
@@ -105,6 +106,8 @@
                 android:textSize="14sp"
                 android:maxLines="1"
                 android:layout_gravity="right"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:background="@drawable/rounded_white_bg"/>
 
             <EditText
