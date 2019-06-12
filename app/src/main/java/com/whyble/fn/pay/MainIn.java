@@ -6,11 +6,12 @@ public class MainIn {
 
     interface View{
 
-        void getCoinInfo(String s);
+        void setCoinInfo(String s);
     }
     interface Presenter{
+
         void loadData(Context context);
 
-        void getCoinInfo(int i);
+        void getCoinInfo();
     }
 }

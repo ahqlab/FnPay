@@ -3,6 +3,7 @@ package com.whyble.fn.pay.view.login;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
@@ -38,6 +39,7 @@ public class LoginActivity extends BaseActivity<LoginActivity> implements LoginI
         presenter.loadData(this);
         if(!mSharedPrefManager.getStringExtra(TextManager.VALID_USER).matches("")){
             inputId.setText(mSharedPrefManager.getStringExtra(TextManager.VALID_USER));
+            inputPass.setText(mSharedPrefManager.getStringExtra(TextManager.PASSWD));
             autoLogin();
         }
     }
@@ -52,7 +54,15 @@ public class LoginActivity extends BaseActivity<LoginActivity> implements LoginI
         switch (view.getId()) {
             case R.id.login_btn:
                 if (ValidationUtil.isEmptyOfEditText(inputId)) {
-                    super.showBasicOneBtnPopup(null, "아이디를 입력하세요")
+                    super.showBasicOneBtnPopup(null, "Please enter your ID.")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+                } else if (!isValidEmail(inputId.getText())) {
+                    super.showBasicOneBtnPopup(null, "The email format does not match.")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -60,7 +70,7 @@ public class LoginActivity extends BaseActivity<LoginActivity> implements LoginI
                                 }
                             }).show();
                 } else if (ValidationUtil.isEmptyOfEditText(inputPass)) {
-                    super.showBasicOneBtnPopup(null, "비밀번호를 입력하세요.")
+                    super.showBasicOneBtnPopup(null, "Please enter your Password.")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -77,11 +87,19 @@ public class LoginActivity extends BaseActivity<LoginActivity> implements LoginI
         }
     }
 
+    public final static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
+    }
+
     public void autoLogin(){
         String id = mSharedPrefManager.getStringExtra(TextManager.VALID_USER);
         String passwd = mSharedPrefManager.getStringExtra(TextManager.PASSWD);
         if(!id.matches("")){
-            presenter.login(id, passwd);
+            presenter.login(id, inputPass.getText().toString());
         }
     }
 

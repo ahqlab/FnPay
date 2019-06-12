@@ -25,9 +25,9 @@ public class MainModel extends CommonModel {
         sharedPrefManager = SharedPrefManager.getInstance(context);
     }
 
-    public void getCoinInfo(int i, final DomainCallBackListner<String> domainCallBackListner) {
+    public void getCoinInfo(final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        new AbstractOldAsyncTask("coin_info.php?valid_user=" + sharedPrefManager.getStringExtra(TextManager.VALID_USER) + "&coin_type=" + String.valueOf(i)){
+        new AbstractOldAsyncTask("coin_info.php?valid_user=" + sharedPrefManager.getStringExtra(TextManager.VALID_USER)){
 
             @Override
             protected void doPostExecute(String d) {

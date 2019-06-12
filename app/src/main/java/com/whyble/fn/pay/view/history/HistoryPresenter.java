@@ -20,24 +20,11 @@ public class HistoryPresenter implements HistoryIn.Presenter {
         model.loadData(context);
     }
 
-    @Override
-    public void getPayment(int coinType) {
-        model.getPayment(coinType, new CommonModel.DomainCallBackListner<String>() {
-            @Override
-            public void doPostExecute(String s) {
-                view.setPayment(s);
-            }
 
-            @Override
-            public void doPreExecute() {
-
-            }
-        });
-    }
 
     @Override
-    public void getSend(int coinType) {
-        model.getSend(coinType, new CommonModel.DomainCallBackListner<String>() {
+    public void getTransaction() {
+        model.getSend(new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.setSend(s);
@@ -49,4 +36,5 @@ public class HistoryPresenter implements HistoryIn.Presenter {
             }
         });
     }
+
 }

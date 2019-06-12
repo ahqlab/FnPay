@@ -21,11 +21,26 @@ public class EdtInfoPresenter implements EdtInfoIn.Presenter {
     }
 
     @Override
-    public void editInfo(String oldPassword, String newPassword) {
-        model.editInfo(oldPassword,newPassword , new CommonModel.DomainCallBackListner<String>() {
+    public void editInfo(String name) {
+        model.editInfo(name , new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.editInfoResult(s);
+            }
+
+            @Override
+            public void doPreExecute() {
+
+            }
+        });
+    }
+
+    @Override
+    public void getProfile() {
+        model.getProfile(new CommonModel.DomainCallBackListner<String>() {
+            @Override
+            public void doPostExecute(String s) {
+                view.setProfile(s);
             }
 
             @Override

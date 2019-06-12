@@ -21,8 +21,8 @@ public class JoinPresenter implements JoinIn.Presenter {
     }
 
     @Override
-    public void signup(String id, String password, String pinnumber) {
-        model.signup(id, password, pinnumber, new CommonModel.DomainCallBackListner<String>() {
+    public void signup(String id, String password, String passwordCheck,String pinnumber, String name) {
+        model.signup(id, password, passwordCheck, pinnumber, name, new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.signupResult(s);

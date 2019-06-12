@@ -1,7 +1,17 @@
 <resources>
-    <string name="app_name">FnPay</string>
-    <string name="toast_text_clipboard_adress">복사 성공</string>
+    <string name="app_name">Nepas</string>
+    <string name="toast_text_clipboard_adress">Copy success</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="press_back_message">종료하려면 \'Back\' 버튼을 다시 누르십시오.</string>
+    <string name="press_back_message">Press the \'Back\' button again to exit.</string>
+    <string name="qr_message">Please read the QR code in a rectangle.</string>
+    <string name="agree1">
+        Article 1 [Purpose)\n\n
+These Terms and Conditions shall be governed by the terms and conditions of the Cyber   Mall and the users\' rights, duties and responsibilities when using the Internet related services provided by the Nepas (hereinafter referred to as "Nepas" And the purpose of the\n\n
+Article 2 (Definitions)\n\n
+① "Nepas" means a virtual shop established by Nepas to trade goods and services using information and communication facilities such as computers to provide users with goods or services (hereinafter referred to as "goods, etc."), Operate a mall
+ It is also used as a means of business.\n\n
+② User is a member or non-member who accesses "Nepas" and receives service provided by "Nepas" in accordance with this agreement.\n\n
+③ "Member" means a person who has provided personal information to "Nepas" and registered as a member, who is continuously provided with the information of "Nepas" and who can continue to use the services provided by "Nepas".
+    </string>
 </resources>

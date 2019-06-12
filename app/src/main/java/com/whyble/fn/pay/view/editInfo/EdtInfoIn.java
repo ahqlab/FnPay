@@ -7,10 +7,14 @@ public class EdtInfoIn {
     interface View{
 
         void editInfoResult(String s);
+
+        void setProfile(String s);
     }
     interface Presenter{
         void loadData(Context context);
 
-        void editInfo(String oldPassword, String newPassword);
+        void editInfo(String name);
+
+        void getProfile();
     }
 }

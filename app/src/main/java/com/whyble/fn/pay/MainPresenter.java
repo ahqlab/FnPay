@@ -31,11 +31,11 @@ public class MainPresenter implements MainIn.Presenter {
     }
 
     @Override
-    public void getCoinInfo(int i) {
-        model.getCoinInfo(i, new CommonModel.DomainCallBackListner<String>() {
+    public void getCoinInfo() {
+        model.getCoinInfo(new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
-                view.getCoinInfo(s);
+                view.setCoinInfo(s);
             }
 
             @Override
@@ -44,7 +44,4 @@ public class MainPresenter implements MainIn.Presenter {
             }
         });
     }
-
-
-
 }

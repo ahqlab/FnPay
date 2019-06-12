@@ -25,12 +25,13 @@ public class PaymentModel extends CommonModel {
     }
 
 
-    public void doPayment(String addr, String send_coin , String coin_type, String amount, final DomainCallBackListner<String> domainCallBackListner) {
+    public void doPayment(String addr, String send_coin , String orderno, final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("addr", addr));
         nameValuePairs.add(new BasicNameValuePair("send_coin", send_coin));
-        nameValuePairs.add(new BasicNameValuePair("coin_type", coin_type));
-        nameValuePairs.add(new BasicNameValuePair("amount", amount));
+        if(orderno != null && !orderno.matches("")){
+            nameValuePairs.add(new BasicNameValuePair("orderno", orderno));
+        }
         nameValuePairs.add(new BasicNameValuePair("valid_user", sharedPrefManager.getStringExtra(TextManager.VALID_USER)));
 
         new AbstractOldAsyncTask("payment.php"){

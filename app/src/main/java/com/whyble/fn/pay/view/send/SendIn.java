@@ -13,8 +13,8 @@ public class SendIn {
     interface Presenter{
         void loadData(Context context);
 
-        void getCoinInfo(int i);
+        void getCoinInfo();
 
-        void sendCoin(String addr, String sendCoin, String coinType);
+        void sendCoin(String addr, String sendCoin);
     }
 }

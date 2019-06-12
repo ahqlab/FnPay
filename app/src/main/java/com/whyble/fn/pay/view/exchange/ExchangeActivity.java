@@ -27,6 +27,8 @@ import com.whyble.fn.pay.domain.ExchangeItem;
 import com.whyble.fn.pay.domain.ServerResponse;
 import com.whyble.fn.pay.util.ValidationUtil;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -74,7 +76,7 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
         ButterKnife.bind(this);
         presenter = new ExchangePresenter(this);
         presenter.loadData(this);
-        presenter.getCoinInfo(0);
+       //presenter.getCoinInfo(0);
         coinBarClick("FNC");
         setFcnSpinner();
         TextView pageTitle = (TextView) findViewById(R.id.page_title);
@@ -90,10 +92,12 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!charSequence.toString().matches("")) {
-                    float value = Float.parseFloat(charSequence.toString());
-                    float exchange = ((coinPrice * value) / price2);
-                    Log.e("HJLEE", "value : " + value + " coinPrice : " + coinPrice + " price2 : " + price2 + " exchange : " + exchange);
-                    exchangeValue.setText(String.valueOf(exchange));
+                    double value = Double.parseDouble(charSequence.toString());
+                    double exchange = ((coinPrice * value) / price2);
+                    NumberFormat formatter = new DecimalFormat("#0.00000000");
+                    System.out.println(formatter.format(exchange));
+                    //Log.e("HJLEE", "value : " + value + " coinPrice : " + coinPrice + " price2 : " + price2 + " exchange : " + exchange);
+                    exchangeValue.setText(formatter.format(exchange));
                 } else {
                     exchangeValue.setText("");
                 }
@@ -117,61 +121,61 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
             case R.id.fnc_coin:
                 coinBarClick("FNC");
                 setFcnSpinner();
-                presenter.getCoinInfo(0);
+               //presenter.getCoinInfo(0);
                 coinType = 0;
                 break;
             case R.id.fnc_coin_btn:
                 coinBarClick("FNC");
                 setFcnSpinner();
-                presenter.getCoinInfo(0);
+               //presenter.getCoinInfo(0);
                 coinType = 0;
                 break;
             case R.id.ltc_coin:
                 coinBarClick("LTC");
                 setLtcSpinner();
-                presenter.getCoinInfo(1);
+               //presenter.getCoinInfo(1);
                 coinType = 1;
                 break;
             case R.id.ltc_coin_btn:
                 coinBarClick("LTC");
                 setLtcSpinner();
-                presenter.getCoinInfo(1);
+               //presenter.getCoinInfo(1);
                 coinType = 1;
                 break;
             case R.id.dash_coin:
                 coinBarClick("DASH");
                 setDashSpinner();
-                presenter.getCoinInfo(2);
+               //presenter.getCoinInfo(2);
                 coinType = 2;
                 break;
             case R.id.dash_coin_btn:
                 coinBarClick("DASH");
                 setDashSpinner();
-                presenter.getCoinInfo(2);
+               //presenter.getCoinInfo(2);
                 coinType = 2;
                 break;
             case R.id.btc_coin:
                 coinBarClick("BTC");
                 setBtcSpinner();
-                presenter.getCoinInfo(3);
+               //presenter.getCoinInfo(3);
                 coinType = 3;
                 break;
             case R.id.btc_coin_btn:
                 coinBarClick("BTC");
                 setBtcSpinner();
-                presenter.getCoinInfo(3);
+               //presenter.getCoinInfo(3);
                 coinType = 3;
                 break;
             case R.id.bch_coin:
                 coinBarClick("BCH");
                 setBchSpinner();
-                presenter.getCoinInfo(4);
+               //presenter.getCoinInfo(4);
                 coinType = 4;
                 break;
             case R.id.bch_coin_btn:
                 coinBarClick("BCH");
                 setBchSpinner();
-                presenter.getCoinInfo(4);
+               //presenter.getCoinInfo(4);
                 coinType = 4;
                 break;
             case R.id.submit:
@@ -392,6 +396,9 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            coinLength.setText("");
+                            exchangeValue.setText("");
+                           //presenter.getCoinInfo(coinType);
                             finish();
                         }
                     }).show();
@@ -401,6 +408,10 @@ public class ExchangeActivity extends BaseActivity<ExchangeActivity> implements 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            coinLength.setText("");
+                            exchangeValue.setText("");
+                           //presenter.getCoinInfo(coinType);
+
                         }
                     }).show();
         }

@@ -24,11 +24,10 @@ public class SendModel extends CommonModel {
         sharedPrefManager = SharedPrefManager.getInstance(context);
     }
 
-    public void sendCoin(String addr, String sendCoin, String coinType, final DomainCallBackListner<String> domainCallBackListner) {
+    public void sendCoin(String addr, String sendCoin, final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("addr", addr));
         nameValuePairs.add(new BasicNameValuePair("send_coin", sendCoin));
-        nameValuePairs.add(new BasicNameValuePair("coin_type", coinType));
         nameValuePairs.add(new BasicNameValuePair("valid_user", sharedPrefManager.getStringExtra(TextManager.VALID_USER)));
 
         new AbstractOldAsyncTask("send_coin.php"){

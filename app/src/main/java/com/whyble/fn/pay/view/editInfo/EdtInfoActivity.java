@@ -10,8 +10,12 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.whyble.fn.pay.R;
+import com.whyble.fn.pay.common.SharedPrefManager;
 import com.whyble.fn.pay.common.base.BaseActivity;
+import com.whyble.fn.pay.domain.Payment;
+import com.whyble.fn.pay.domain.Profile;
 import com.whyble.fn.pay.domain.ServerResponse;
+import com.whyble.fn.pay.util.TextManager.TextManager;
 import com.whyble.fn.pay.util.ValidationUtil;
 
 import butterknife.BindView;
@@ -20,12 +24,13 @@ import butterknife.OnClick;
 
 public class EdtInfoActivity extends BaseActivity<EdtInfoActivity> implements EdtInfoIn.View{
 
-    @BindView(R.id.old_password)
-    EditText oldPassword;
-    @BindView(R.id.new_password)
-    EditText newPassword;
-
     EdtInfoIn.Presenter presenter;
+
+    @BindView(R.id.id)
+    EditText id;
+
+    @BindView(R.id.name)
+    EditText name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +39,12 @@ public class EdtInfoActivity extends BaseActivity<EdtInfoActivity> implements Ed
         ButterKnife.bind(this);
         presenter = new EdtInfoPresenter(this);
         presenter.loadData(this);
-
-
         TextView pageTitle = (TextView) findViewById(R.id.page_title);
-        pageTitle.setText("정보수정");
+        pageTitle.setText("Profile");
         super.setToolbarColor();
+        presenter.getProfile();
+        id.setText(mSharedPrefManager.getStringExtra(TextManager.VALID_USER));
+
     }
 
     @Override
@@ -50,17 +56,8 @@ public class EdtInfoActivity extends BaseActivity<EdtInfoActivity> implements Ed
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.submit:
-
-                if (ValidationUtil.isEmptyOfEditText((EditText) findViewById(R.id.old_password))) {
-                    super.showBasicOneBtnPopup(null, "아이디를 입력하세요")
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
-                } else if (ValidationUtil.isEmptyOfEditText((EditText) findViewById(R.id.new_password))) {
-                    super.showBasicOneBtnPopup(null, "비밀번호를 입력하세요.")
+                if (ValidationUtil.isEmptyOfEditText((EditText) findViewById(R.id.name))) {
+                    super.showBasicOneBtnPopup(null, "Please enter a name.")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -68,7 +65,7 @@ public class EdtInfoActivity extends BaseActivity<EdtInfoActivity> implements Ed
                                 }
                             }).show();
                 } else {
-                    presenter.editInfo(oldPassword.getText().toString(), newPassword.getText().toString());
+                    presenter.editInfo(name.getText().toString());
                 }
                 break;
         }
@@ -78,7 +75,7 @@ public class EdtInfoActivity extends BaseActivity<EdtInfoActivity> implements Ed
     public void editInfoResult(String s) {
         Gson gson = new Gson();
         ServerResponse response = gson.fromJson(s, ServerResponse.class);
-        if(response.getResult().matches("0")){
+        if(response.getResult().matches("2")){
             super.showBasicOneBtnPopup(null, response.getMsg())
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
@@ -96,5 +93,12 @@ public class EdtInfoActivity extends BaseActivity<EdtInfoActivity> implements Ed
                         }
                     }).show();
         }
+    }
+
+    @Override
+    public void setProfile(String s) {
+        Gson gson = new Gson();
+        Profile profile = gson.fromJson(s, Profile.class);
+        name.setText(profile.getUsername());
     }
 }

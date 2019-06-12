@@ -28,8 +28,8 @@ public class ReceivePresenter implements ReceiveIn.Presenter {
     }
 
     @Override
-    public void getCoinInfo(int i) {
-        mainModel.getCoinInfo(i, new CommonModel.DomainCallBackListner<String>() {
+    public void getCoinInfo() {
+        mainModel.getCoinInfo(new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.setCoinInfo(s);

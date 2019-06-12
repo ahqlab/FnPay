@@ -12,7 +12,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -27,12 +27,23 @@
         </activity>
         <activity android:name=".view.join.JoinActivity" />
         <activity android:name=".view.payment.PaymentActivity" />
+        <activity android:name=".view.payment.list.PaymentListActivity" />
         <activity android:name=".view.exchange.ExchangeActivity" />
         <activity android:name=".view.send.SendActivity" />
         <activity android:name=".view.receive.ReceiveActivity" />
         <activity android:name=".view.editInfo.EdtInfoActivity" />
         <activity android:name=".test.TestActivity" />
-        <activity android:name=".view.history.HistoryActivity"></activity>
+        <activity android:name=".view.history.HistoryActivity" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".view.send.pincheck.PinCheckActivity" />
+        <activity android:name=".view.receive.request.RequestAnAmountActivity" />
+        <activity android:name=".view.addressBook.AddressBookActivity" />
+        <activity android:name=".view.change.pin.ChangePinActivity" />
+        <activity android:name=".view.change.password.ChangePasswordActivity"></activity>
     </application>
 
 </manifest>

@@ -1,7 +1,15 @@
 package com.whyble.fn.pay.view.payment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.media.Image;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,11 +19,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.whyble.fn.pay.R;
 import com.whyble.fn.pay.common.base.BaseActivity;
 import com.whyble.fn.pay.domain.CoinInfo;
@@ -30,25 +42,21 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
 
     PaymentIn.Presenter presenter;
 
-    @BindView(R.id.coin_title)
-    TextView coinTitle;
+    @BindView(R.id.amount)
+    EditText amount;
+    
     @BindView(R.id.balance)
-    TextView balance;
+    EditText balance;
 
     @BindView(R.id.addr)
     EditText addr;
 
-    @BindView(R.id.fcn_coin)
-    EditText fcnCoin;
+    String qRaddr;
+    String qRlength;
+    String qRusd;
+    String qRorderno = null;
 
-    @BindView(R.id.usd)
-    EditText usd;
-    @BindView(R.id.s_coin_title)
-    TextView sCoinTitle;
-
-    int coinPrice;
-    float totalBalance;
-    int coinType;
+    CoinInfo response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,24 +70,26 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
 
         presenter = new PaymentPresenter(this);
         presenter.loadData(this);
-        presenter.getCoinInfo(0);
 
 
-        coinBarClick("FNC");
-        usd.addTextChangedListener(new TextWatcher() {
+        amount.addTextChangedListener(new TextWatcher() {
+
+            String beforeText;
+
             @Override
             public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {
+                beforeText = cs.toString();
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().matches("")) {
-                    int value = Integer.parseInt(charSequence.toString());
-                    int cal = value / coinPrice;
-                    if (cal < totalBalance) {
-                        fcnCoin.setText(String.valueOf(cal));
+                if (charSequence.toString().length() > 0) {
+                    float value = Float.parseFloat(charSequence.toString());
+                    if (value < Float.parseFloat(response.getBalance())) {
+                        //amount.setText(String.valueOf(value));
                     } else {
-                        PaymentActivity.super.showBasicOneBtnPopup(null, "현재 보유한 코인보다 많은양을 보낼수없습니다..")
+                        amount.setText(beforeText);
+                        PaymentActivity.super.showBasicOneBtnPopup(null, "You cannot send more coins than you currently own.")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -87,8 +97,6 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
                                     }
                                 }).show();
                     }
-                } else {
-                    fcnCoin.setText("");
                 }
             }
 
@@ -104,86 +112,20 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
         return PaymentActivity.this;
     }
 
-    @OnClick({R.id.paymennt_btn,
-            R.id.fnc_coin, R.id.fnc_coin_btn,
-            R.id.ltc_coin, R.id.ltc_coin_btn,
-            R.id.dash_coin, R.id.dash_coin_btn,
-            R.id.btc_coin, R.id.btc_coin_btn,
-            R.id.bch_coin, R.id.bch_coin_btn
-    })
+    @OnClick({R.id.submit, R.id.qr_btn})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.fnc_coin:
-                coinBarClick("FNC");
-                fcnCoin.setHint("FNC");
-                presenter.getCoinInfo(0);
-                coinType = 0;
-                break;
-            case R.id.fnc_coin_btn:
-                coinBarClick("FNC");
-                fcnCoin.setHint("FNC");
-                presenter.getCoinInfo(0);
-                coinType = 0;
-                break;
-            case R.id.ltc_coin:
-                coinBarClick("LTC");
-                fcnCoin.setHint("LTC");
-                presenter.getCoinInfo(1);
-                coinType = 1;
-                break;
-            case R.id.ltc_coin_btn:
-                coinBarClick("LTC");
-                fcnCoin.setHint("LTC");
-                presenter.getCoinInfo(1);
-                coinType = 1;
-                break;
-            case R.id.dash_coin:
-                coinBarClick("DASH");
-                fcnCoin.setHint("DASH");
-                presenter.getCoinInfo(2);
-                coinType = 2;
-                break;
-            case R.id.dash_coin_btn:
-                coinBarClick("DASH");
-                fcnCoin.setHint("DASH");
-                presenter.getCoinInfo(2);
-                coinType = 2;
-                break;
-            case R.id.btc_coin:
-                coinBarClick("BTC");
-                fcnCoin.setHint("BTC");
-                presenter.getCoinInfo(3);
-                coinType = 3;
-                break;
-            case R.id.btc_coin_btn:
-                coinBarClick("BTC");
-                fcnCoin.setHint("BTC");
-                presenter.getCoinInfo(3);
-                coinType = 3;
-                break;
-            case R.id.bch_coin:
-                coinBarClick("BCH");
-                fcnCoin.setHint("BCH");
-                presenter.getCoinInfo(4);
-                coinType = 4;
-                break;
-            case R.id.bch_coin_btn:
-                coinBarClick("BCH");
-                fcnCoin.setHint("BCH");
-                presenter.getCoinInfo(4);
-                coinType = 4;
-                break;
-            case R.id.paymennt_btn:
+            case R.id.submit:
                 if (ValidationUtil.isEmptyOfEditText(addr)) {
-                    super.showBasicOneBtnPopup(null, "보낼주소를 입력하세요.")
+                    super.showBasicOneBtnPopup(null, "Please enter the address to be sent.")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
                             }).show();
-                } else if (ValidationUtil.isEmptyOfEditText(fcnCoin)) {
-                    super.showBasicOneBtnPopup(null, "보낼 코인 수량을 입력하세요.")
+                } else if (ValidationUtil.isEmptyOfEditText(amount)) {
+                    super.showBasicOneBtnPopup(null, "Please enter the quantity of coin to be sent.")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -191,120 +133,130 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
                                 }
                             }).show();
                 } else {
-
-                    presenter.doPayment(addr.getText().toString(), fcnCoin.getText().toString(), String.valueOf(coinType), usd.getText().toString());
+                    presenter.doPayment(addr.getText().toString(), amount.getText().toString() , qRorderno);
                 }
                 break;
-
+            case R.id.qr_btn:
+                requestCamera();
+                break;
         }
     }
 
-    public void coinBarClick(String coin) {
-        if (coin.equals("FNC")) {
-            LinearLayout fcLayout = (LinearLayout) findViewById(R.id.fnc_coin);
-            fcLayout.setBackgroundResource(R.drawable.rounded_left_radius_light_gray_bg);
+    private void requestCamera(){
+        int permissionCamera = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
+        if (permissionCamera == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(PaymentActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        } else {
+//                            Toast.makeText(getApplicationContext(), "CAMERA permission authorized", Toast.LENGTH_SHORT).show();
+            openCamera();
+        }
+    }
 
-            LinearLayout ltcLayout = (LinearLayout) findViewById(R.id.ltc_coin);
-            ltcLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
+    private void openCamera() {
+       /* IntentIntegrator integrator = new IntentIntegrator(PaymentActivity.this);
+        integrator.setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+        integrator.setScanningRectangle(800, 800);
+        integrator.setPrompt(getString(R.string.qr_message));
+        integrator.initiateScan();*/
 
-            LinearLayout dashLayout = (LinearLayout) findViewById(R.id.dash_coin);
-            dashLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
 
-            LinearLayout btnLayout = (LinearLayout) findViewById(R.id.btc_coin);
-            btnLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
 
-            LinearLayout bchLayout = (LinearLayout) findViewById(R.id.bch_coin);
-            bchLayout.setBackgroundResource(R.drawable.rounded_right_radius_trans_bg);
-        } else if (coin.equals("LTC")) {
-            LinearLayout fcLayout = (LinearLayout) findViewById(R.id.fnc_coin);
-            fcLayout.setBackgroundResource(R.drawable.rounded_left_radius_trans_bg);
+        IntentIntegrator integrator = new IntentIntegrator(PaymentActivity.this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+        integrator.setPrompt("");
+        integrator.setCameraId(0);
+        integrator.setBeepEnabled(false);
+        integrator.setBarcodeImageEnabled(false);
+        integrator.initiateScan();
+    }
 
-            LinearLayout ltcLayout = (LinearLayout) findViewById(R.id.ltc_coin);
-            ltcLayout.setBackgroundResource(R.drawable.rounded_radius_light_gray_bg);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+               // Toast.makeText(PaymentActivity.this, "", Toast.LENGTH_LONG).show();
+            } else {
+                Log.e("HJLEE", "QR 문자열 " + result.getContents());
+                //QR 문자열 NQAJ2tQyapCBz4JGwnTFFJFCy7YPbSktSu/금액/코인수량/ordernum
+                if(result.getContents().indexOf("/") > -1){
+                    //Log.e("HJLEE", "1 문자열 있음.");
 
-            LinearLayout dashLayout = (LinearLayout) findViewById(R.id.dash_coin);
-            dashLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
+                    String[] array = result.getContents().split("/");
+                    qRaddr  = array[0];
+                    qRlength  = array[1];
+                    qRusd  = array[2];
+                    qRorderno  = array[3];
 
-            LinearLayout btnLayout = (LinearLayout) findViewById(R.id.btc_coin);
-            btnLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
+                    addr.setText(qRaddr);
+                    amount.setText(qRusd);
+                    //fcnCoin.setText(qRlength);
+                    //usd.setText(qRusd);
+                }else{
+                    //Log.e("HJLEE", "1 문자열 없음.");
+                    addr.setText(result.getContents());
+                }
 
-            LinearLayout bchLayout = (LinearLayout) findViewById(R.id.bch_coin);
-            bchLayout.setBackgroundResource(R.drawable.rounded_right_radius_trans_bg);
-        } else if (coin.equals("DASH")) {
-            LinearLayout fcLayout = (LinearLayout) findViewById(R.id.fnc_coin);
-            fcLayout.setBackgroundResource(R.drawable.rounded_left_radius_trans_bg);
-
-            LinearLayout ltcLayout = (LinearLayout) findViewById(R.id.ltc_coin);
-            ltcLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout dashLayout = (LinearLayout) findViewById(R.id.dash_coin);
-            dashLayout.setBackgroundResource(R.drawable.rounded_radius_light_gray_bg);
-
-            LinearLayout btnLayout = (LinearLayout) findViewById(R.id.btc_coin);
-            btnLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout bchLayout = (LinearLayout) findViewById(R.id.bch_coin);
-            bchLayout.setBackgroundResource(R.drawable.rounded_right_radius_trans_bg);
-        } else if (coin.equals("BTC")) {
-            LinearLayout fcLayout = (LinearLayout) findViewById(R.id.fnc_coin);
-            fcLayout.setBackgroundResource(R.drawable.rounded_left_radius_trans_bg);
-
-            LinearLayout ltcLayout = (LinearLayout) findViewById(R.id.ltc_coin);
-            ltcLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout dashLayout = (LinearLayout) findViewById(R.id.dash_coin);
-            dashLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout btnLayout = (LinearLayout) findViewById(R.id.btc_coin);
-            btnLayout.setBackgroundResource(R.drawable.rounded_radius_light_gray_bg);
-
-            LinearLayout bchLayout = (LinearLayout) findViewById(R.id.bch_coin);
-            bchLayout.setBackgroundResource(R.drawable.rounded_right_radius_trans_bg);
-        } else if (coin.equals("BCH")) {
-            LinearLayout fcLayout = (LinearLayout) findViewById(R.id.fnc_coin);
-            fcLayout.setBackgroundResource(R.drawable.rounded_left_radius_trans_bg);
-
-            LinearLayout ltcLayout = (LinearLayout) findViewById(R.id.ltc_coin);
-            ltcLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout dashLayout = (LinearLayout) findViewById(R.id.dash_coin);
-            dashLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout btnLayout = (LinearLayout) findViewById(R.id.btc_coin);
-            btnLayout.setBackgroundResource(R.drawable.rounded_radius_trans_bg);
-
-            LinearLayout bchLayout = (LinearLayout) findViewById(R.id.bch_coin);
-            bchLayout.setBackgroundResource(R.drawable.rounded_right_radius_light_gray_bg);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case CAMERA_PERMISSION_CODE:
+                for (int i = 0; i < permissions.length; i++) {
+                    String permission = permissions[i];
+                    int grantResult = grantResults[i];
+                    if (permission.equals(Manifest.permission.CAMERA)) {
+                        if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                            openCamera();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "CAMERA permission denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+
+
+
+    @Override
     public void setCoinInfo(String s) {
         Gson gson = new Gson();
-        CoinInfo response = gson.fromJson(s, CoinInfo.class);
-        coinTitle.setText(response.getCoin_title());
+        response = gson.fromJson(s, CoinInfo.class);
+        //amount.setText(response.getCoin_title());
         balance.setText(response.getBalance());
-        coinPrice = Integer.parseInt(response.getCoin_price());
-        totalBalance = Float.parseFloat(response.getBalance());
+       // coinPrice = Integer.parseInt(response.getCoin_price());
+       // totalBalance = Float.parseFloat(response.getBalance());
     }
 
     @Override
     public void doPaymentResult(String s) {
         Gson gson = new Gson();
         ServerResponse response = gson.fromJson(s, ServerResponse.class);
-        if (response.getResult() == "0") {
+        //Log.e("HJLEE", "responcr :" + response.toString());
+        if (response.getResult().matches("0")) {
             super.showBasicOneBtnPopup(null, response.getMsg())
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            fcnCoin.setText("");
-                            usd.setText("");
+                            //fcnCoin.setText("");
+                            //usd.setText("");
+                           //presenter.getCoinInfo(coinType);
                          /*   Log.e("HJLEE", "");
                             Log.e("HJLEE", addr.getText().toString());
                             Log.e("HJLEE", fcnCoin.getText().toString());
                             Log.e("HJLEE", String.valueOf(coinType));
                             Log.e("HJLEE", usd.getText().toString());*/
                             dialog.dismiss();
+                            presenter.getCoinInfo();
                         }
                     }).show();
         } else {
@@ -312,6 +264,9 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                           // fcnCoin.setText("");
+                           // usd.setText("");
+                           //presenter.getCoinInfo(coinType);
                             dialog.dismiss();
                         }
                     }).show();
@@ -327,5 +282,11 @@ public class PaymentActivity extends BaseActivity<PaymentActivity> implements Pa
         }else{
 
         }*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.getCoinInfo();
     }
 }

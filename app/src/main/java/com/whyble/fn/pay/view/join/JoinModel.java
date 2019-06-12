@@ -24,11 +24,13 @@ public class JoinModel extends CommonModel {
         sharedPrefManager = SharedPrefManager.getInstance(context);
     }
 
-    public void signup(String id, String password, String pinnumber, final DomainCallBackListner<String> domainCallBackListner) {
+    public void signup(String id, String password, String passwordCheck,String pinnumber, String name,  final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("id", id));
         nameValuePairs.add(new BasicNameValuePair("pass", password));
+        nameValuePairs.add(new BasicNameValuePair("passwordCheck", passwordCheck));
         nameValuePairs.add(new BasicNameValuePair("pinnumber", pinnumber));
+        nameValuePairs.add(new BasicNameValuePair("name", name));
 
         new AbstractOldAsyncTask("register.php"){
 

@@ -13,8 +13,8 @@ public class PaymentIn {
     interface Presenter{
         void loadData(Context context);
 
-        void getCoinInfo(int i);
+        void getCoinInfo();
 
-        void doPayment(String s, String s1, String s2, String s3);
+        void doPayment(String s, String s1, String s2);
     }
 }

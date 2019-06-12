@@ -15,7 +15,7 @@ public class ExchangetIn {
     interface Presenter{
         void loadData(Context context);
 
-        void getCoinInfo(int i);
+        void getCoinInfo();
 
         void getExchangeSpinner(int i);
 

@@ -25,8 +25,8 @@ public class PaymentPresenter implements PaymentIn.Presenter {
     }
 
     @Override
-    public void getCoinInfo(int i) {
-        mainModel.getCoinInfo(i, new CommonModel.DomainCallBackListner<String>() {
+    public void getCoinInfo() {
+        mainModel.getCoinInfo(new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.setCoinInfo(s);
@@ -40,8 +40,8 @@ public class PaymentPresenter implements PaymentIn.Presenter {
     }
 
     @Override
-    public void doPayment(String s, String s1, String s2, String s3) {
-        model.doPayment(s, s1, s2, s3, new CommonModel.DomainCallBackListner<String>() {
+    public void doPayment(String s, String s1, String s2) {
+        model.doPayment(s, s1, s2, new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.doPaymentResult(s);

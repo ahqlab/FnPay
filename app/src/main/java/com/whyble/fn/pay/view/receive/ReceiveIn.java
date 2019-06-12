@@ -11,7 +11,7 @@ public class ReceiveIn {
     interface Presenter{
         void loadData(Context context);
 
-        void getCoinInfo(int i);
+        void getCoinInfo();
 
     }
 }

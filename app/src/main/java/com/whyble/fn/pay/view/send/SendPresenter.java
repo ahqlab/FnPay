@@ -26,8 +26,8 @@ public class SendPresenter implements SendIn.Presenter {
     }
 
     @Override
-    public void getCoinInfo(int i) {
-        mainModel.getCoinInfo(i, new CommonModel.DomainCallBackListner<String>() {
+    public void getCoinInfo() {
+        mainModel.getCoinInfo(new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.setCoinInfo(s);
@@ -41,8 +41,8 @@ public class SendPresenter implements SendIn.Presenter {
     }
 
     @Override
-    public void sendCoin(String addr, String sendCoin, String coinType) {
-        model.sendCoin(addr, sendCoin, coinType, new CommonModel.DomainCallBackListner<String>() {
+    public void sendCoin(String addr, String sendCoin) {
+        model.sendCoin(addr, sendCoin, new CommonModel.DomainCallBackListner<String>() {
             @Override
             public void doPostExecute(String s) {
                 view.sendCoinResult(s);

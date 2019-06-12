@@ -24,13 +24,30 @@ public class EdtInfoModel extends CommonModel {
         sharedPrefManager = SharedPrefManager.getInstance(context);
     }
 
-    public void editInfo(String oldPassword, String newPassword, final DomainCallBackListner<String> domainCallBackListner) {
+    public void editInfo(String name, final DomainCallBackListner<String> domainCallBackListner) {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("old_pass", oldPassword));
-        nameValuePairs.add(new BasicNameValuePair("pass", newPassword));
+        nameValuePairs.add(new BasicNameValuePair("username", name));
         nameValuePairs.add(new BasicNameValuePair("valid_user", sharedPrefManager.getStringExtra(TextManager.VALID_USER)));
 
-        new AbstractOldAsyncTask("modify.php"){
+        new AbstractOldAsyncTask("profile_ok.php"){
+
+            @Override
+            protected void doPostExecute(String d) {
+                domainCallBackListner.doPostExecute(d);
+            }
+
+            @Override
+            protected void doPreExecute() {
+
+            }
+        }.execute(nameValuePairs);
+    }
+
+    public void getProfile(final DomainCallBackListner<String> domainCallBackListner) {
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        nameValuePairs.add(new BasicNameValuePair("valid_user", sharedPrefManager.getStringExtra(TextManager.VALID_USER)));
+
+        new AbstractOldAsyncTask("profile.php"){
 
             @Override
             protected void doPostExecute(String d) {

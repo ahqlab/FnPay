@@ -11,6 +11,6 @@ public class JoinIn {
     interface Presenter{
         void loadData(Context context);
 
-        void signup(String id, String password, String pinnumber);
+        void signup(String id, String password, String passwordCheck, String pinnumber,  String name);
     }
 }
